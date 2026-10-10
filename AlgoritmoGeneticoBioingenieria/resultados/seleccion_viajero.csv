@@ -1,0 +1,4 @@
+Metodo,FitnessPromedio,MejorFitness,DesviacionEstandar,TiempoPromedio_s,MejorIndividuo
+elitismo,461.8,434,17.0938585462733,0.0259782,[11 8 5 6 10 4 9 3 7 2 1 12 13]
+torneo,462.6,420,27.9427987145168,0.04302144,[13 12 5 10 6 7 3 9 2 1 4 8 11]
+ruleta,525,508,19.6214168703486,0.01594702,[6 8 11 5 4 3 9 7 10 1 2 12 13]

@@ -1,0 +1,176 @@
+clc;
+clear;
+close all;
+
+% Configurar las carpetas
+configurarProyecto;
+
+disp('PRUEBA DEL ALGORITMO GENETICO DEL VIAJERO');
+disp('------------------------------------------');
+
+% Semilla
+rng(11);
+
+%% Parámetros
+
+tamanoPoblacion = 20;
+numeroGeneraciones = 50;
+probabilidadCruce = 0.90;
+probabilidadMutacion = 0.10;
+
+%% PROBAR ELITISMO
+
+disp(' ');
+disp('EJECUCION CON ELITISMO');
+
+[rutaElitismo, fitnessElitismo, ...
+ historialElitismo, tiempoElitismo] = ...
+    algoritmoGeneticoViajero( ...
+        tamanoPoblacion, ...
+        numeroGeneraciones, ...
+        'elitismo', ...
+        probabilidadCruce, ...
+        probabilidadMutacion ...
+    );
+
+disp('Mejor ruta con elitismo:');
+disp(rutaElitismo);
+
+fprintf('Mejor fitness: %.0f minutos\n', ...
+    fitnessElitismo);
+
+fprintf('Tiempo: %.6f segundos\n', ...
+    tiempoElitismo);
+
+%% PROBAR TORNEO
+
+disp(' ');
+disp('EJECUCION CON TORNEO');
+
+rng(11);
+
+[rutaTorneo, fitnessTorneo, ...
+ historialTorneo, tiempoTorneo] = ...
+    algoritmoGeneticoViajero( ...
+        tamanoPoblacion, ...
+        numeroGeneraciones, ...
+        'torneo', ...
+        probabilidadCruce, ...
+        probabilidadMutacion ...
+    );
+
+disp('Mejor ruta con torneo:');
+disp(rutaTorneo);
+
+fprintf('Mejor fitness: %.0f minutos\n', ...
+    fitnessTorneo);
+
+fprintf('Tiempo: %.6f segundos\n', ...
+    tiempoTorneo);
+
+%% PROBAR RULETA
+
+disp(' ');
+disp('EJECUCION CON RULETA');
+
+rng(11);
+
+[rutaRuleta, fitnessRuleta, ...
+ historialRuleta, tiempoRuleta] = ...
+    algoritmoGeneticoViajero( ...
+        tamanoPoblacion, ...
+        numeroGeneraciones, ...
+        'ruleta', ...
+        probabilidadCruce, ...
+        probabilidadMutacion ...
+    );
+
+disp('Mejor ruta con ruleta:');
+disp(rutaRuleta);
+
+fprintf('Mejor fitness: %.0f minutos\n', ...
+    fitnessRuleta);
+
+fprintf('Tiempo: %.6f segundos\n', ...
+    tiempoRuleta);
+
+%% VERIFICAR LAS RUTAS
+
+assert(isequal(sort(rutaElitismo), 1:13), ...
+    'La ruta de elitismo es invalida.');
+
+assert(isequal(sort(rutaTorneo), 1:13), ...
+    'La ruta de torneo es invalida.');
+
+assert(isequal(sort(rutaRuleta), 1:13), ...
+    'La ruta de ruleta es invalida.');
+
+%% VERIFICAR LOS FITNESS
+
+assert(fitnessElitismo < 10000, ...
+    'El elitismo produjo una penalizacion.');
+
+assert(fitnessTorneo < 10000, ...
+    'El torneo produjo una penalizacion.');
+
+assert(fitnessRuleta < 10000, ...
+    'La ruleta produjo una penalizacion.');
+
+%% VERIFICAR LOS HISTORIALES
+
+assert(length(historialElitismo) == ...
+       numeroGeneraciones + 1, ...
+    'El historial de elitismo tiene tamaño incorrecto.');
+
+assert(length(historialTorneo) == ...
+       numeroGeneraciones + 1, ...
+    'El historial de torneo tiene tamaño incorrecto.');
+
+assert(length(historialRuleta) == ...
+       numeroGeneraciones + 1, ...
+    'El historial de ruleta tiene tamaño incorrecto.');
+
+% El mejor global no puede empeorar
+assert(all(diff(historialElitismo) <= 0), ...
+    'El historial de elitismo empeoro.');
+
+assert(all(diff(historialTorneo) <= 0), ...
+    'El historial de torneo empeoro.');
+
+assert(all(diff(historialRuleta) <= 0), ...
+    'El historial de ruleta empeoro.');
+
+%% Graficar la convergencia
+
+generaciones = 0:numeroGeneraciones;
+
+figure;
+
+plot(generaciones, historialElitismo, ...
+    'LineWidth', 1.5);
+
+hold on;
+
+plot(generaciones, historialTorneo, ...
+    'LineWidth', 1.5);
+
+plot(generaciones, historialRuleta, ...
+    'LineWidth', 1.5);
+
+hold off;
+
+grid on;
+
+xlabel('Generación');
+ylabel('Mejor tiempo encontrado');
+title('Convergencia del algoritmo genético del viajero');
+
+legend( ...
+    'Elitismo', ...
+    'Torneo', ...
+    'Ruleta', ...
+    'Location', 'best' ...
+);
+
+disp(' ');
+disp('Todas las pruebas del algoritmo fueron superadas.');
